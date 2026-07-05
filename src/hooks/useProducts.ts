@@ -112,7 +112,7 @@ const DEFAULT_PRODUCTS: Product[] = [
   },
 ];
 
-const PRODUCTS_KEY = "fitora_products";
+const PRODUCTS_KEY = "fitora_products_v2";
 
 const getProducts = (): Product[] => {
   const stored = localStorage.getItem(PRODUCTS_KEY);
