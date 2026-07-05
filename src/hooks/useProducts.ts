@@ -112,21 +112,33 @@ const DEFAULT_PRODUCTS: Product[] = [
   },
 ];
 
-const PRODUCTS_KEY = "fitora_products_v2";
-
-const getProducts = (): Product[] => {
-  const stored = localStorage.getItem(PRODUCTS_KEY);
-  if (!stored) {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(DEFAULT_PRODUCTS));
-    return DEFAULT_PRODUCTS;
-  }
-  return JSON.parse(stored);
+const imageMap: Record<string, string> = {
+  "/assets/product-cashews.webp": imgCashews,
+  "/assets/product-almonds.webp": imgAlmonds,
+  "/assets/product-pistachios.webp": imgPistachios,
+  "/assets/product-dates.webp": imgDates,
+  "/assets/product-walnuts.webp": imgWalnuts,
+  "/assets/product-apricots.webp": imgApricots,
 };
+
+import { supabase } from "@/lib/supabase";
 
 export const useProducts = () => {
   return useQuery({
     queryKey: ["products"],
-    queryFn: getProducts,
+    queryFn: async (): Promise<Product[]> => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: true });
+        
+      if (error) throw error;
+      
+      return data.map((p) => ({
+        ...p,
+        image: imageMap[p.image] || p.image,
+      }));
+    },
   });
 };
 
@@ -134,11 +146,14 @@ export const useAddProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newProduct: Omit<Product, "id">) => {
-      const products = getProducts();
-      const product = { ...newProduct, id: crypto.randomUUID() };
-      const updated = [...products, product];
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
-      return product;
+      const { data, error } = await supabase
+        .from("products")
+        .insert([newProduct])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -150,10 +165,16 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (updatedProduct: Product) => {
-      const products = getProducts();
-      const updated = products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p));
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
-      return updatedProduct;
+      const { id, ...updates } = updatedProduct;
+      const { data, error } = await supabase
+        .from("products")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+        
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -165,9 +186,8 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const products = getProducts();
-      const updated = products.filter((p) => p.id !== id);
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if (error) throw error;
       return id;
     },
     onSuccess: () => {
@@ -176,23 +196,18 @@ export const useDeleteProduct = () => {
   });
 };
 
-const CATEGORIES_KEY = "fitora_categories";
-const DEFAULT_CATEGORIES: string[] = ["Nuts", "Dry Fruits", "Mixes", "Gift Boxes"];
-
-const getCategories = (): string[] => {
-  if (typeof window === "undefined") return DEFAULT_CATEGORIES;
-  const stored = localStorage.getItem(CATEGORIES_KEY);
-  if (!stored) {
-    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(DEFAULT_CATEGORIES));
-    return DEFAULT_CATEGORIES;
-  }
-  return JSON.parse(stored);
-};
-
 export const useCategories = () => {
   return useQuery({
     queryKey: ["categories"],
-    queryFn: getCategories,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("name")
+        .order("created_at", { ascending: true });
+        
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
   });
 };
 
@@ -200,15 +215,20 @@ export const useAddCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newCategory: string) => {
-      const categories = getCategories();
       const trimmed = newCategory.trim();
       if (!trimmed) throw new Error("Category name cannot be empty");
-      if (categories.some((c) => c.toLowerCase() === trimmed.toLowerCase())) {
-        throw new Error("Category already exists");
+      
+      const { data, error } = await supabase
+        .from("categories")
+        .insert([{ name: trimmed }])
+        .select()
+        .single();
+        
+      if (error) {
+        if (error.code === "23505") throw new Error("Category already exists");
+        throw error;
       }
-      const updated = [...categories, trimmed];
-      localStorage.setItem(CATEGORIES_KEY, JSON.stringify(updated));
-      return trimmed;
+      return data.name;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -220,9 +240,12 @@ export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (categoryToDelete: string) => {
-      const categories = getCategories();
-      const updated = categories.filter((c) => c !== categoryToDelete);
-      localStorage.setItem(CATEGORIES_KEY, JSON.stringify(updated));
+      const { error } = await supabase
+        .from("categories")
+        .delete()
+        .eq("name", categoryToDelete);
+        
+      if (error) throw error;
       return categoryToDelete;
     },
     onSuccess: () => {
