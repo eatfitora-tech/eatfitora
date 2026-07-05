@@ -18,7 +18,7 @@ export function Nav({ tone = "light" }: { tone?: "light" | "dark" }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1 flex items-center justify-between">
           <Link to="/" className="block shrink-0">
             <img
-              src="/logo1.png"
+              src="/logo1.webp"
               alt="Fitora Logo"
               className="h-10 sm:h-12 md:h-14 max-w-[200px] sm:max-w-[280px] object-contain drop-shadow-md"
             />
@@ -48,13 +48,13 @@ export function Nav({ tone = "light" }: { tone?: "light" | "dark" }) {
             </form>
           ) : (
             <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold">
-              {["Home", "Shop", "Profile"].map((l) => (
-                <Link
-                  key={l}
-                  to={l === "Home" ? "/" : `/${l.toLowerCase()}`}
-                  className="opacity-80 hover:opacity-100 transition"
-                >
-                  {l}
+              {[
+                { label: "Home", to: "/" as const },
+                { label: "Shop", to: "/shop" as const },
+                { label: "Profile", to: "/profile" as const },
+              ].map(({ label, to }) => (
+                <Link key={label} to={to} className="opacity-80 hover:opacity-100 transition">
+                  {label}
                 </Link>
               ))}
             </nav>

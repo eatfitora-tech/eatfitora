@@ -7,7 +7,7 @@ export function Footer() {
         <div className="sm:col-span-2">
           <Link to="/" className="mb-4 sm:mb-6 block">
             <img
-              src="/logo1.png"
+              src="/logo1.webp"
               alt="Fitora Logo"
               className="h-16 sm:h-24 max-w-[220px] sm:max-w-[300px] object-contain drop-shadow-md"
             />

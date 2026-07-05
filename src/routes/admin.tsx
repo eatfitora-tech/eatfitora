@@ -395,7 +395,7 @@ function ProductForm({
     tagline: initialData?.tagline || "",
     price: initialData?.price || 0,
     originalPrice: initialData?.originalPrice || "",
-    image: initialData?.image || "/logo1.png",
+    image: initialData?.image || "/logo1.webp",
     badge: initialData?.badge || "",
     category: initialData?.category || "",
     description: initialData?.description || "",

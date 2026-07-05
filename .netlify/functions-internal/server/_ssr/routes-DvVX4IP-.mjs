@@ -1,0 +1,345 @@
+import { a as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
+import { o as useProducts } from "./useProducts-1oxHq1hv.mjs";
+import { A as ArrowRight, C as Leaf, c as ShoppingBag, l as ShieldCheck, s as Star, w as Heart } from "../_libs/lucide-react.mjs";
+import { t as hero_bowl_default } from "./hero-bowl-BuIiS9-l.mjs";
+import { t as ProductCard } from "./ProductCard-CrdDkCMX.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-DvVX4IP-.js
+var import_jsx_runtime = require_jsx_runtime();
+var feature_bowl_default = "/assets/feature-bowl-CAPUdFgo.jpg";
+function Index() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "min-h-screen bg-[var(--cream)] text-[var(--ink)]",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Hero, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Marquee, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Highlights, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Story, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Products, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BigBowl, {})
+		]
+	});
+}
+function Hero() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+		className: "relative overflow-hidden bg-[var(--crimson)] text-[var(--cream)]",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "absolute inset-0 -z-0",
+				style: { background: "radial-gradient(70% 60% at 70% 30%, rgba(255,180,120,0.35), transparent 60%)" }
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "relative max-w-7xl mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-16 sm:pb-20 md:pt-28 md:pb-28 grid lg:grid-cols-12 gap-6 sm:gap-8 items-center",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "lg:col-span-5 relative z-10",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
+							className: "mt-0 font-display text-4xl sm:text-5xl md:text-7xl xl:text-8xl leading-[0.9]",
+							children: [
+								"Crafted by",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-[var(--amber)]",
+									children: "Nature"
+								}),
+								". Perfected",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
+								"for You."
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/80 max-w-md",
+							children: "Single-origin nuts and dry fruits — slow-roasted in tiny batches and shipped to your door within 48 hours of cracking."
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-6 sm:mt-8 flex flex-wrap gap-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+								href: "#shop",
+								className: "h-11 sm:h-12 px-5 sm:px-6 rounded-full bg-[var(--amber)] text-[var(--maroon)] font-bold inline-flex items-center gap-2 hover:scale-[1.02] transition shadow-xl text-sm sm:text-base",
+								children: ["Shop the harvest ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShoppingBag, { className: "w-4 h-4" })]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+								href: "#story",
+								className: "h-11 sm:h-12 px-5 sm:px-6 rounded-full border border-white/30 font-semibold inline-flex items-center gap-2 hover:bg-white/10 transition text-sm sm:text-base",
+								children: "Our story"
+							})]
+						})
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "lg:col-span-7 relative",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "relative aspect-square max-w-[720px] mx-auto w-full",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "absolute inset-8 rounded-full blur-3xl opacity-50",
+							style: { background: "radial-gradient(circle, #ffd27a 0%, transparent 65%)" }
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: hero_bowl_default,
+							alt: "A decorative bowl overflowing with golden nuts and dried fruits, with nuts splashing mid-air",
+							width: 1536,
+							height: 1536,
+							className: "relative z-10 w-full h-full object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.45)] float-slow select-none",
+							draggable: false
+						})]
+					})
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Wave, {
+				color: "var(--cream)",
+				position: "bottom"
+			})
+		]
+	});
+}
+function Wave({ color, position }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: `relative w-full ${position === "top" ? "rotate-180" : ""}`,
+		"aria-hidden": true,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+			viewBox: "0 0 1440 80",
+			preserveAspectRatio: "none",
+			className: "block w-full h-12 md:h-20",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+				d: "M0,40 C240,90 480,0 720,40 C960,80 1200,10 1440,40 L1440,80 L0,80 Z",
+				fill: color
+			})
+		})
+	});
+}
+function Marquee() {
+	const items = [
+		"Dry Fruits",
+		"Dried Berries",
+		"Healthy Seeds",
+		"Cereals",
+		"Makhana"
+	];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "bg-[var(--cream)] py-6 overflow-hidden border-y border-[var(--ink)]/10",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "flex gap-12 marquee whitespace-nowrap will-change-transform",
+			children: [...items, ...items].map((t, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+				className: "font-display text-2xl sm:text-4xl md:text-5xl text-[var(--maroon)]/80 inline-flex items-center gap-6 sm:gap-12",
+				children: [
+					t,
+					" ",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "text-[var(--amber)]",
+						children: "✦"
+					})
+				]
+			}, i))
+		})
+	});
+}
+function Highlights() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+		id: "story",
+		className: "bg-[var(--cream)] py-20 md:py-28",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 sm:gap-12 items-center",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid grid-cols-3 gap-2 sm:gap-4",
+				children: [
+					feature_bowl_default,
+					hero_bowl_default,
+					feature_bowl_default
+				].map((img, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: `relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[3/4] shadow-[var(--shadow-card)] ${i === 1 ? "translate-y-4 sm:translate-y-6" : ""}`,
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+						src: img,
+						alt: "",
+						loading: "lazy",
+						className: "w-full h-full object-cover"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute inset-0 bg-gradient-to-t from-[var(--maroon)]/40 via-transparent to-transparent" })]
+				}, i))
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "w-12 h-12 rounded-2xl bg-[var(--crimson)] grid place-items-center shadow-md",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Leaf, { className: "w-6 h-6 text-[var(--amber)]" })
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+					className: "mt-4 sm:mt-5 font-display text-3xl sm:text-5xl md:text-6xl text-[var(--crimson)] leading-[0.95]",
+					children: [
+						"Harvested Fresh.",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
+						"Crafted for Wellness."
+					]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-4 sm:mt-5 text-[var(--ink)]/75 max-w-md text-base sm:text-lg",
+					children: "Every FITORA product is thoughtfully sourced, quality-checked, and packed with care to bring you the finest natural nutrition for your everyday lifestyle."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-8 space-y-4",
+					children: [
+						{
+							title: "Premium Ingredients",
+							text: "Only the finest handpicked ingredients make the cut."
+						},
+						{
+							title: "Quality Assured",
+							text: "Every batch is carefully inspected for excellence."
+						},
+						{
+							title: "Sealed for Freshness",
+							text: "Advanced packaging keeps every bite crisp and delicious."
+						}
+					].map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex gap-4",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "w-10 h-10 rounded-full bg-[var(--amber)]/30 text-[var(--crimson)] grid place-items-center shrink-0",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "w-5 h-5" })
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "font-display text-xl sm:text-2xl text-[var(--maroon)]",
+							children: t.title
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "text-xs sm:text-sm text-[var(--ink)]/70",
+							children: t.text
+						})] })]
+					}, t.title))
+				})
+			] })]
+		})
+	});
+}
+function BigBowl() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+		className: "relative bg-[var(--cream)]",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Wave, {
+			color: "var(--maroon)",
+			position: "top"
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "bg-[var(--maroon)] text-[var(--cream)] py-20 md:py-28 -mt-px",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 sm:gap-12 items-center",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "text-[10px] sm:text-xs font-bold text-[var(--amber)] uppercase tracking-[0.2em]",
+						children: "Featured Mix"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+						className: "font-display text-4xl sm:text-6xl md:text-7xl mt-2 sm:mt-3 text-[var(--amber)] leading-[0.9]",
+						children: [
+							"The Royal",
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
+							"Fitora Bowl."
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-4 sm:mt-5 text-white/75 max-w-md text-base sm:text-lg",
+						children: "Our signature mix — Mamra almonds, Iranian pistachios, jumbo cashews, Medjool dates, walnuts and a sprinkle of sea salt. The whole grove in one bowl."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-8 grid grid-cols-3 gap-4 max-w-md",
+						children: [
+							["7", "days farm-to-door"],
+							["38", "trusted growers"],
+							["0", "preservatives"]
+						].map(([n, l]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "font-display text-3xl sm:text-5xl text-[var(--amber)]",
+							children: n
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "text-[10px] sm:text-xs text-white/70 mt-1",
+							children: l
+						})] }, l))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+						href: "#shop",
+						className: "mt-6 sm:mt-8 inline-flex items-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-full bg-[var(--amber)] text-[var(--maroon)] font-bold hover:scale-[1.03] transition shadow-xl text-sm sm:text-base",
+						children: ["Try the bowl ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-4 h-4" })]
+					})
+				] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "relative aspect-square max-w-lg mx-auto w-full",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "absolute inset-6 rounded-full blur-3xl opacity-50",
+						style: { background: "radial-gradient(circle, #ffb05a 0%, transparent 65%)" }
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+						src: feature_bowl_default,
+						alt: "A patterned bowl filled with mixed nuts and dried fruits",
+						loading: "lazy",
+						width: 1280,
+						height: 1280,
+						className: "relative w-full h-full object-contain float-slow drop-shadow-[0_40px_60px_rgba(0,0,0,0.55)]"
+					})]
+				})]
+			})
+		})]
+	});
+}
+function Story() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+		className: "bg-[var(--cream)] py-20",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 sm:gap-12 md:gap-20",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "w-12 h-12 rounded-2xl bg-[var(--amber)] grid place-items-center shadow-md",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Heart, { className: "w-6 h-6 text-[var(--maroon)]" })
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+					className: "mt-4 sm:mt-5 font-display text-3xl sm:text-5xl text-[var(--crimson)]",
+					children: "Crafted with Care."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-3 sm:mt-4 text-[var(--ink)]/75 text-base sm:text-lg",
+					children: "Every FITORA product is carefully prepared using premium ingredients and modern quality standards to preserve natural taste, crunch, and nutrition in every bite."
+				})
+			] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "w-12 h-12 rounded-2xl bg-[var(--maroon)] grid place-items-center shadow-md",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Star, { className: "w-6 h-6 text-[var(--amber)]" })
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+					className: "mt-4 sm:mt-5 font-display text-3xl sm:text-5xl text-[var(--crimson)]",
+					children: "Cracked for the senses."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-3 sm:mt-4 text-[var(--ink)]/75 text-base sm:text-lg",
+					children: "Buttery walnuts, perfumed pistachios, dates that taste like caramel — sourced for character, not commodity grade. Snacking the way it should be."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+					href: "#shop",
+					className: "mt-6 inline-flex items-center gap-2 px-5 h-11 rounded-full bg-[var(--crimson)] text-[var(--cream)] font-bold hover:scale-[1.03] transition shadow-lg",
+					children: ["Order now ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-4 h-4" })]
+				})
+			] })]
+		})
+	});
+}
+function Products() {
+	const { data: products, isLoading } = useProducts();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+		id: "shop",
+		className: "bg-[var(--cream)] py-20",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "max-w-7xl mx-auto px-4 sm:px-6",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 sm:mb-10 gap-4 flex-wrap",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					className: "text-[10px] sm:text-xs font-bold text-[var(--crimson)] uppercase tracking-[0.2em]",
+					children: "The Harvest"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "font-display text-3xl sm:text-5xl md:text-6xl mt-1.5 sm:mt-2 text-[var(--maroon)]",
+					children: "Today's freshest crackers."
+				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex gap-2 text-xs sm:text-sm overflow-x-auto pb-1 -mx-1 px-1 w-full sm:w-auto",
+					children: [
+						"All",
+						"Nuts",
+						"Dry Fruits",
+						"Mixes"
+					].map((t, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						className: `px-3 sm:px-4 h-8 sm:h-10 rounded-full border font-bold transition whitespace-nowrap ${i === 0 ? "bg-[var(--crimson)] text-[var(--cream)] border-[var(--crimson)]" : "bg-white border-[var(--ink)]/10 hover:bg-[var(--sand)]"}`,
+						children: t
+					}, t))
+				})]
+			}), isLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "py-20 text-center font-bold text-[var(--maroon)]",
+				children: "Loading harvest..."
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-6",
+				children: products?.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProductCard, { p }, p.id))
+			})]
+		})
+	});
+}
+//#endregion
+export { Index as component };

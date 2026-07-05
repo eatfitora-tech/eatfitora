@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShoppingBag, Star, Truck, Leaf, ShieldCheck, ArrowRight, Heart } from "lucide-react";
-import heroBowl from "@/assets/hero-bowl.png";
-import featureBowl from "@/assets/feature-bowl.jpg";
-import imgCashews from "@/assets/product-cashews.png";
-import imgAlmonds from "@/assets/product-almonds.png";
-import imgPistachios from "@/assets/product-pistachios.png";
-import imgDates from "@/assets/product-dates.png";
-import imgWalnuts from "@/assets/product-walnuts.png";
-import imgApricots from "@/assets/product-apricots.png";
+import heroBowl from "@/assets/hero-bowl.webp";
+import featureBowl from "@/assets/feature-bowl.webp";
+import imgCashews from "@/assets/product-cashews.webp";
+import imgAlmonds from "@/assets/product-almonds.webp";
+import imgPistachios from "@/assets/product-pistachios.webp";
+import imgDates from "@/assets/product-dates.webp";
+import imgWalnuts from "@/assets/product-walnuts.webp";
+import imgApricots from "@/assets/product-apricots.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({

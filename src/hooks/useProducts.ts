@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import imgCashews from "@/assets/product-cashews.png";
-import imgAlmonds from "@/assets/product-almonds.png";
-import imgPistachios from "@/assets/product-pistachios.png";
-import imgDates from "@/assets/product-dates.png";
-import imgWalnuts from "@/assets/product-walnuts.png";
-import imgApricots from "@/assets/product-apricots.png";
+import imgCashews from "@/assets/product-cashews.webp";
+import imgAlmonds from "@/assets/product-almonds.webp";
+import imgPistachios from "@/assets/product-pistachios.webp";
+import imgDates from "@/assets/product-dates.webp";
+import imgWalnuts from "@/assets/product-walnuts.webp";
+import imgApricots from "@/assets/product-apricots.webp";
 
 export type ProductCategory = string;
 

@@ -21,7 +21,8 @@ export function ProductCard({ p }: { p: Product }) {
 
   return (
     <Link
-      to={`/product/${p.id}`}
+      to="/product/$productId"
+      params={{ productId: p.id }}
       className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[var(--ink)]/8 hover:shadow-[var(--shadow-3d)] transition-all duration-500 hover:-translate-y-1 block"
     >
       <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-[var(--sand)] via-[#fce5b8] to-[var(--amber)]/40">
