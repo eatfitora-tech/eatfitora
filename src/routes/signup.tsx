@@ -25,14 +25,14 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--cream)] text-[var(--ink)] pt-24 sm:pt-28 pb-16 sm:pb-24 flex items-center justify-center px-4 sm:px-6">
+    <div className="min-h-screen bg-[var(--cream)] text-[var(--ink)] pt-20 sm:pt-28 pb-16 sm:pb-24 flex items-center justify-center px-4 sm:px-6 overflow-x-hidden">
       <div className="w-full max-w-md relative">
         {/* Decorative blobs */}
         <div className="absolute -top-20 -left-20 w-48 h-48 bg-[var(--crimson)]/12 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-[var(--amber)]/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Card */}
-        <div className="relative bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-[var(--shadow-card)] border border-[var(--ink)]/5 overflow-hidden">
+        <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-[var(--shadow-card)] border border-[var(--ink)]/5 overflow-hidden">
           {/* Top accent bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--amber)] via-[var(--crimson)] to-[var(--amber)]" />
 

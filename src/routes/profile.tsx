@@ -13,13 +13,18 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useMarkWhatsAppOpened, useOrders } from "@/hooks/useOrders";
+import { buildOrderWhatsAppUrl } from "@/lib/commerce";
+import { resolveProductImage } from "@/hooks/useProducts";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
 function ProfilePage() {
-  const { user, orders } = useStore();
+  const { user } = useStore();
+  const { data: orders = [], isLoading: ordersLoading, error: ordersError } = useOrders();
+  const markWhatsAppOpened = useMarkWhatsAppOpened();
   const { addresses, isLoading, addAddress, isAdding, deleteAddress, isDeleting } = useAddresses();
   const { signOut } = useAuth();
   const navigate = useNavigate();
@@ -89,6 +94,11 @@ function ProfilePage() {
     }
   };
 
+  const trackOrder = (order: (typeof orders)[number]) => {
+    window.open(buildOrderWhatsAppUrl(order), "_blank", "noopener,noreferrer");
+    markWhatsAppOpened.mutate(order.id);
+  };
+
   // If we are checking auth state, we could show a loader. But we'll rely on user from Zustand.
   // Redirect to login if not authenticated
   if (!user) {
@@ -153,7 +163,15 @@ function ProfilePage() {
                 <h2 className="font-display text-2xl sm:text-3xl text-[var(--maroon)] mb-4 sm:mb-6">
                   Order History
                 </h2>
-                {orders.length === 0 ? (
+                {ordersLoading ? (
+                  <div className="flex justify-center py-16">
+                    <div className="w-8 h-8 border-4 border-[var(--crimson)]/20 border-t-[var(--crimson)] rounded-full animate-spin" />
+                  </div>
+                ) : ordersError ? (
+                  <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-sm font-semibold text-red-600">
+                    We couldn't load your orders. Please refresh and try again.
+                  </div>
+                ) : orders.length === 0 ? (
                   <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-center shadow-sm border border-[var(--ink)]/10">
                     <Package className="w-12 h-12 text-[var(--ink)]/20 mx-auto mb-4" />
                     <h3 className="font-bold text-xl text-[var(--maroon)] mb-2">No orders yet</h3>
@@ -173,14 +191,16 @@ function ProfilePage() {
                             <div className="text-xs font-bold text-[var(--ink)]/50 uppercase tracking-wider mb-1">
                               Order ID
                             </div>
-                            <div className="font-bold text-[var(--maroon)]">{order.id}</div>
+                            <div className="font-bold text-[var(--maroon)]">
+                              {order.orderNumber}
+                            </div>
                           </div>
                           <div>
                             <div className="text-xs font-bold text-[var(--ink)]/50 uppercase tracking-wider mb-1">
                               Date
                             </div>
                             <div className="font-bold text-[var(--maroon)]">
-                              {new Date(order.date).toLocaleDateString()}
+                              {new Date(order.createdAt).toLocaleDateString()}
                             </div>
                           </div>
                           <div>
@@ -188,7 +208,7 @@ function ProfilePage() {
                               Status
                             </div>
                             <div
-                              className={`font-bold inline-flex px-3 py-1 rounded-full text-xs ${order.status === "Pending" ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"}`}
+                              className={`font-bold inline-flex px-3 py-1 rounded-full text-xs capitalize ${order.status === "pending" ? "bg-amber-100 text-amber-700" : order.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
                             >
                               {order.status}
                             </div>
@@ -205,29 +225,32 @@ function ProfilePage() {
 
                         <div className="space-y-4">
                           {order.items.map((item) => (
-                            <div key={item.product.id} className="flex items-center gap-4">
+                            <div key={item.id} className="flex items-center gap-4">
                               <img
-                                src={item.product.image}
-                                alt={item.product.name}
+                                src={resolveProductImage(item.productImage)}
+                                alt={item.productName}
                                 className="w-12 h-12 bg-[var(--sand)] rounded overflow-hidden p-1"
                               />
                               <div className="flex-1">
                                 <div className="font-bold text-sm text-[var(--maroon)]">
-                                  {item.product.name}
+                                  {item.productName}
                                 </div>
                                 <div className="text-xs text-[var(--ink)]/60">
+                                  {item.selectedWeight ? `${item.selectedWeight} · ` : ""}
                                   Qty: {item.quantity}
                                 </div>
                               </div>
-                              <div className="font-bold text-sm">
-                                ₹{(item.product.price * item.quantity).toFixed(2)}
-                              </div>
+                              <div className="font-bold text-sm">₹{item.lineTotal.toFixed(2)}</div>
                             </div>
                           ))}
                         </div>
 
                         <div className="mt-6 pt-6 border-t border-[var(--ink)]/10 flex justify-end">
-                          <button className="flex items-center gap-2 text-sm font-bold text-[var(--amber)] hover:text-[var(--maroon)] transition">
+                          <button
+                            type="button"
+                            onClick={() => trackOrder(order)}
+                            className="flex items-center gap-2 text-sm font-bold text-[var(--amber)] hover:text-[var(--maroon)] transition"
+                          >
                             Track via WhatsApp <ExternalLink className="w-4 h-4" />
                           </button>
                         </div>

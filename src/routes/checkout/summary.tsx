@@ -1,7 +1,11 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useStore } from "@/store/useStore";
 import { useAddresses } from "@/hooks/useAddresses";
 import { ArrowLeft, MessageCircle } from "lucide-react";
+import { productCartKey } from "@/hooks/useProducts";
+import { useCreateOrder, useMarkWhatsAppOpened } from "@/hooks/useOrders";
+import { buildOrderWhatsAppUrl, estimatedDelivery } from "@/lib/commerce";
+import { useState } from "react";
 
 export const Route = createFileRoute("/checkout/summary")({
   component: SummaryPage,
@@ -13,12 +17,15 @@ function SummaryPage() {
   const searchParams = new URLSearchParams(window.location.search);
   const addressId = searchParams.get("addressId");
 
-  const { cart, clearCart, addOrder } = useStore();
+  const { cart, clearCart } = useStore();
   const { addresses, isLoading } = useAddresses();
+  const createOrder = useCreateOrder();
+  const markWhatsAppOpened = useMarkWhatsAppOpened();
+  const [submitError, setSubmitError] = useState("");
   const address = addresses.find((a) => a.id === addressId) || addresses[0];
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const delivery = subtotal > 1500 || cart.length === 0 ? 0 : 50.0;
+  const delivery = estimatedDelivery(subtotal);
   const total = subtotal + delivery;
 
   if (isLoading) {
@@ -43,49 +50,28 @@ function SummaryPage() {
     );
   }
 
-  const handlePlaceOrder = () => {
-    addOrder({
-      id: `ORD-${Math.floor(Math.random() * 10000)}`,
-      date: new Date().toISOString(),
-      items: cart,
-      total,
-      subtotal,
-      delivery,
-      status: "Pending",
-      address,
-    });
+  const handlePlaceOrder = async () => {
+    setSubmitError("");
+    const whatsappWindow = window.open("about:blank", "_blank");
 
-    clearCart();
+    try {
+      const order = await createOrder.mutateAsync({ addressId: address.id, cart });
+      const whatsappUrl = buildOrderWhatsAppUrl(order);
+      clearCart();
 
-    const businessNumber = "919440007093";
+      if (whatsappWindow) {
+        whatsappWindow.location.href = whatsappUrl;
+        markWhatsAppOpened.mutate(order.id);
+      }
 
-    let message = `🛒 *NEW ORDER*\n\n`;
-    message += `*Customer Details*\n`;
-    message += `Name: ${address.fullName}\n`;
-    message += `Phone: ${address.phone}\n\n`;
-
-    message += `*Delivery Address*\n`;
-    message += `${address.house}, ${address.street}\n`;
-    message += `${address.area}, ${address.city}, ${address.state} ${address.pincode}\n`;
-    if (address.landmark) message += `Landmark: ${address.landmark}\n`;
-    if (address.notes) message += `Notes: ${address.notes}\n`;
-
-    message += `\n*Products*\n`;
-    cart.forEach((item) => {
-      message += `- ${item.product.name} (x${item.quantity}) - ₹${(item.product.price * item.quantity).toFixed(2)}\n`;
-    });
-
-    message += `\n*Billing*\n`;
-    message += `Subtotal: ₹${subtotal.toFixed(2)}\n`;
-    message += `Delivery: ${delivery === 0 ? "Free" : `₹${delivery.toFixed(2)}`}\n`;
-    message += `*Total: ₹${total.toFixed(2)}*\n\n`;
-    message += `Thank you!`;
-
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${businessNumber}?text=${encodedMessage}`;
-
-    window.open(whatsappUrl, "_blank");
-    navigate({ to: "/profile" });
+      navigate({
+        to: "/checkout/success",
+        search: { orderId: order.id, whatsappOpened: Boolean(whatsappWindow) },
+      });
+    } catch (error) {
+      whatsappWindow?.close();
+      setSubmitError((error as Error).message || "We couldn't save your order. Please try again.");
+    }
   };
 
   return (
@@ -124,7 +110,7 @@ function SummaryPage() {
               <div className="space-y-4">
                 {cart.map((item) => (
                   <div
-                    key={item.product.id}
+                    key={productCartKey(item.product)}
                     className="flex gap-4 border-b border-[var(--ink)]/5 pb-4 last:border-0 last:pb-0"
                   >
                     <img
@@ -136,6 +122,7 @@ function SummaryPage() {
                       <div className="font-bold text-[var(--maroon)]">{item.product.name}</div>
                       <div className="text-xs text-[var(--ink)]/60 font-medium mb-1">
                         {item.product.category}
+                        {item.product.selectedWeight ? ` · ${item.product.selectedWeight}` : ""}
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Qty: {item.quantity}</span>
@@ -182,14 +169,22 @@ function SummaryPage() {
 
               <button
                 onClick={handlePlaceOrder}
-                className="flex items-center justify-center gap-3 w-full h-14 sm:h-16 rounded-full bg-[#25D366] text-white font-bold text-base sm:text-lg hover:bg-[#20bd5a] transition shadow-xl hover:shadow-2xl hover:-translate-y-1"
+                disabled={createOrder.isPending}
+                className="flex items-center justify-center gap-3 w-full h-14 sm:h-16 rounded-full bg-[#25D366] text-white font-bold text-base sm:text-lg hover:bg-[#20bd5a] transition shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-60 disabled:hover:translate-y-0"
               >
-                <MessageCircle className="w-6 h-6" /> Place Order via WhatsApp
+                <MessageCircle className="w-6 h-6" />
+                {createOrder.isPending ? "Saving order…" : "Save & continue on WhatsApp"}
               </button>
 
+              {submitError && (
+                <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+                  {submitError}
+                </p>
+              )}
+
               <p className="text-center text-xs text-[var(--ink)]/50 mt-5 font-medium leading-relaxed">
-                Clicking this will open WhatsApp with your order details pre-filled. We'll chat
-                there to arrange payment and delivery!
+                Your order is saved first. WhatsApp then opens with the confirmed order number and
+                server-validated total.
               </p>
             </div>
           </div>

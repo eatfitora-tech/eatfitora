@@ -1,6 +1,6 @@
 import { Plus, Check, Minus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { Product } from "@/hooks/useProducts";
+import { Product, productCartKey } from "@/hooks/useProducts";
 import { useStore } from "@/store/useStore";
 import { useState } from "react";
 
@@ -8,13 +8,27 @@ export function ProductCard({ p }: { p: Product }) {
   const { addToCart, updateQuantity, removeFromCart } = useStore();
   const [justAdded, setJustAdded] = useState(false);
 
-  const cartItem = useStore((state) => state.cart.find((item) => item.product.id === p.id));
+  const defaultOption = p.weightOptions?.[0];
+  const cartProduct = defaultOption
+    ? {
+        ...p,
+        price: defaultOption.price,
+        originalPrice: defaultOption.originalPrice,
+        selectedWeight: defaultOption.weight,
+      }
+    : p;
+  const cartKey = productCartKey(cartProduct);
+  const cartItem = useStore((state) =>
+    state.cart.find((item) => productCartKey(item.product) === cartKey),
+  );
   const quantity = cartItem ? cartItem.quantity : 0;
+  const isOutOfStock = p.stockQuantity <= 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(p, 1);
+    if (isOutOfStock) return;
+    addToCart(cartProduct, 1);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
@@ -31,6 +45,11 @@ export function ProductCard({ p }: { p: Product }) {
             {p.badge}
           </span>
         )}
+        {isOutOfStock && (
+          <span className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 px-2.5 py-1 rounded-full bg-[var(--ink)] text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
+            Sold out
+          </span>
+        )}
         <img
           src={p.image}
           alt={p.name}
@@ -38,7 +57,7 @@ export function ProductCard({ p }: { p: Product }) {
           className="absolute inset-0 w-full h-full object-contain p-6 sm:p-8 transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3 drop-shadow-2xl"
         />
       </div>
-      <div className="p-3.5 sm:p-5 flex items-center justify-between gap-2 sm:gap-3">
+      <div className="p-3 sm:p-5">
         <div className="min-w-0">
           <div className="font-display text-lg sm:text-2xl leading-tight truncate text-[var(--maroon)]">
             {p.name}
@@ -47,16 +66,22 @@ export function ProductCard({ p }: { p: Product }) {
             {p.tagline}
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
           <div className="flex flex-col items-end mr-0.5 sm:mr-1">
-            {p.originalPrice && (
+            {cartProduct.originalPrice && (
               <div className="text-[9px] sm:text-[10px] text-[var(--ink)]/40 line-through font-bold leading-none mb-0.5">
-                ₹{p.originalPrice.toFixed(2)}
+                ₹{cartProduct.originalPrice.toFixed(2)}
               </div>
             )}
             <div className="font-display text-lg sm:text-2xl text-[var(--crimson)] leading-none">
-              ₹{p.price.toFixed(2)}
+              ₹{cartProduct.price.toFixed(2)}
             </div>
+            {defaultOption && (
+              <div className="text-[9px] sm:text-[10px] text-[var(--ink)]/55 font-bold mt-1">
+                {p.weightOptions && p.weightOptions.length > 1 ? "From " : ""}
+                {defaultOption.weight}
+              </div>
+            )}
           </div>
           {quantity > 0 ? (
             <div className="flex items-center bg-white rounded-full border border-[var(--ink)]/10 shadow-sm h-10 px-1">
@@ -65,9 +90,9 @@ export function ProductCard({ p }: { p: Product }) {
                   e.preventDefault();
                   e.stopPropagation();
                   if (quantity === 1) {
-                    removeFromCart(p.id);
+                    removeFromCart(cartKey);
                   } else {
-                    updateQuantity(p.id, quantity - 1);
+                    updateQuantity(cartKey, quantity - 1);
                   }
                 }}
                 className="w-8 h-8 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
@@ -81,9 +106,10 @@ export function ProductCard({ p }: { p: Product }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  updateQuantity(p.id, quantity + 1);
+                  updateQuantity(cartKey, quantity + 1);
                 }}
-                className="w-8 h-8 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
+                disabled={quantity >= p.stockQuantity}
+                className="w-8 h-8 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition disabled:opacity-30"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
@@ -91,9 +117,14 @@ export function ProductCard({ p }: { p: Product }) {
           ) : (
             <button
               onClick={handleAddToCart}
+              disabled={isOutOfStock}
               aria-label={`Add ${p.name} to cart`}
               className={`w-10 h-10 rounded-full grid place-items-center hover:scale-110 transition shadow-md shrink-0 ${
-                justAdded ? "bg-green-600 text-white" : "bg-[var(--crimson)] text-[var(--cream)]"
+                justAdded
+                  ? "bg-green-600 text-white"
+                  : isOutOfStock
+                    ? "bg-[var(--ink)]/20 text-[var(--ink)]/40 cursor-not-allowed"
+                    : "bg-[var(--crimson)] text-[var(--cream)]"
               }`}
             >
               {justAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}

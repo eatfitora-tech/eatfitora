@@ -1,7 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://mxapgpjzxsncoqjxmlyj.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14YXBncGp6eHNuY29xanhtbHlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNzc2NDcsImV4cCI6MjA5ODY1MzY0N30.c4YTZNShDst_8OnJ2EH9qfLX2pwHbzk8avBNY73BYQs";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the deployment environment.",
+  );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});

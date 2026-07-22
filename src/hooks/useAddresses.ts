@@ -19,6 +19,7 @@ export function useAddresses() {
       const { data, error } = await supabase
         .from("addresses")
         .select("*")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -74,7 +75,12 @@ export function useAddresses() {
 
   const deleteAddress = useMutation({
     mutationFn: async (addressId: string) => {
-      const { error } = await supabase.from("addresses").delete().eq("id", addressId);
+      if (!userId) throw new Error("Must be logged in");
+      const { error } = await supabase
+        .from("addresses")
+        .delete()
+        .eq("id", addressId)
+        .eq("user_id", userId);
 
       if (error) throw error;
     },

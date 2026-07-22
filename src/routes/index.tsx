@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ShoppingBag, Star, Truck, Leaf, ShieldCheck, ArrowRight, Heart } from "lucide-react";
+import { Star, Truck, Leaf, ShieldCheck, ArrowRight, Heart } from "lucide-react";
 import heroBowl from "@/assets/hero-bowl.webp";
 import featureBowl from "@/assets/feature-bowl.webp";
 import imgCashews from "@/assets/product-cashews.webp";
@@ -8,6 +8,7 @@ import imgPistachios from "@/assets/product-pistachios.webp";
 import imgDates from "@/assets/product-dates.webp";
 import imgWalnuts from "@/assets/product-walnuts.webp";
 import imgApricots from "@/assets/product-apricots.webp";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,85 +44,11 @@ import { ProductCard } from "@/components/ProductCard";
 function Index() {
   return (
     <div className="min-h-screen bg-[var(--cream)] text-[var(--ink)]">
-      <Hero />
+      <Products />
       <Marquee />
       <Highlights />
       <Story />
-      <Products />
       <BigBowl />
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <section className="relative overflow-hidden bg-[var(--crimson)] text-[var(--cream)]">
-      <div
-        className="absolute inset-0 -z-0"
-        style={{
-          background:
-            "radial-gradient(70% 60% at 70% 30%, rgba(255,180,120,0.35), transparent 60%)",
-        }}
-      />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-16 sm:pb-20 md:pt-28 md:pb-28 grid lg:grid-cols-12 gap-6 sm:gap-8 items-center">
-        <div className="lg:col-span-5 relative z-10">
-          <h1 className="mt-0 font-display text-4xl sm:text-5xl md:text-7xl xl:text-8xl leading-[0.9]">
-            Crafted by
-            <br />
-            <span className="text-[var(--amber)]">Nature</span>. Perfected
-            <br />
-            for You.
-          </h1>
-          <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/80 max-w-md">
-            Single-origin nuts and dry fruits — slow-roasted in tiny batches and shipped to your
-            door within 48 hours of cracking.
-          </p>
-          <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
-            <a
-              href="#shop"
-              className="h-11 sm:h-12 px-5 sm:px-6 rounded-full bg-[var(--amber)] text-[var(--maroon)] font-bold inline-flex items-center gap-2 hover:scale-[1.02] transition shadow-xl text-sm sm:text-base"
-            >
-              Shop the harvest <ShoppingBag className="w-4 h-4" />
-            </a>
-            <a
-              href="#story"
-              className="h-11 sm:h-12 px-5 sm:px-6 rounded-full border border-white/30 font-semibold inline-flex items-center gap-2 hover:bg-white/10 transition text-sm sm:text-base"
-            >
-              Our story
-            </a>
-          </div>
-        </div>
-
-        <div className="lg:col-span-7 relative">
-          <div className="relative aspect-square max-w-[720px] mx-auto w-full">
-            {/* glow */}
-            <div
-              className="absolute inset-8 rounded-full blur-3xl opacity-50"
-              style={{ background: "radial-gradient(circle, #ffd27a 0%, transparent 65%)" }}
-            />
-            <img
-              src={heroBowl}
-              alt="A decorative bowl overflowing with golden nuts and dried fruits, with nuts splashing mid-air"
-              width={1536}
-              height={1536}
-              className="relative z-10 w-full h-full object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.45)] float-slow select-none"
-              draggable={false}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Wavy bottom */}
-      <Wave color="var(--cream)" position="bottom" />
-    </section>
-  );
-}
-
-function Chip({ label, icon }: { label: string; icon: React.ReactNode }) {
-  return (
-    <div className="px-3.5 py-2 rounded-full bg-white/95 text-[var(--ink)] text-xs font-bold inline-flex items-center gap-1.5 shadow-xl backdrop-blur">
-      <span className="text-[var(--crimson)]">{icon}</span>
-      {label}
     </div>
   );
 }
@@ -224,26 +151,25 @@ function BigBowl() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div>
             <span className="text-[10px] sm:text-xs font-bold text-[var(--amber)] uppercase tracking-[0.2em]">
-              Featured Mix
+              Our Products
             </span>
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl mt-2 sm:mt-3 text-[var(--amber)] leading-[0.9]">
-              The Royal
+              Fresh choices
               <br />
-              Fitora Bowl.
+              for every day.
             </h2>
             <p className="mt-4 sm:mt-5 text-white/75 max-w-md text-base sm:text-lg">
-              Our signature mix — Mamra almonds, Iranian pistachios, jumbo cashews, Medjool dates,
-              walnuts and a sprinkle of sea salt. The whole grove in one bowl.
+              Browse premium nuts, naturally sweet dry fruits, and wholesome snack mixes. Every
+              product is carefully selected and freshness-packed for everyday snacking, sharing, and
+              gifting.
             </p>
-            <div className="mt-8 grid grid-cols-3 gap-4 max-w-md">
-              {[
-                ["7", "days farm-to-door"],
-                ["38", "trusted growers"],
-                ["0", "preservatives"],
-              ].map(([n, l]) => (
-                <div key={l}>
-                  <div className="font-display text-3xl sm:text-5xl text-[var(--amber)]">{n}</div>
-                  <div className="text-[10px] sm:text-xs text-white/70 mt-1">{l}</div>
+            <div className="mt-7 grid grid-cols-3 gap-2 sm:gap-3 max-w-md">
+              {["Premium Nuts", "Dry Fruits", "Healthy Mixes"].map((category) => (
+                <div
+                  key={category}
+                  className="rounded-xl sm:rounded-2xl border border-white/15 bg-white/5 px-2 sm:px-3 py-3 sm:py-4 text-center"
+                >
+                  <div className="text-xs sm:text-sm font-bold text-[var(--cream)]">{category}</div>
                 </div>
               ))}
             </div>
@@ -251,7 +177,7 @@ function BigBowl() {
               href="#shop"
               className="mt-6 sm:mt-8 inline-flex items-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-full bg-[var(--amber)] text-[var(--maroon)] font-bold hover:scale-[1.03] transition shadow-xl text-sm sm:text-base"
             >
-              Try the bowl <ArrowRight className="w-4 h-4" />
+              Browse products <ArrowRight className="w-4 h-4" />
             </a>
           </div>
           <div className="relative aspect-square max-w-lg mx-auto w-full">
@@ -315,9 +241,16 @@ function Story() {
 
 function Products() {
   const { data: products, isLoading } = useProducts();
+  const [category, setCategory] = useState("All");
+  const categories = [
+    "All",
+    ...Array.from(new Set(products?.map((product) => product.category) || [])),
+  ];
+  const visibleProducts =
+    category === "All" ? products : products?.filter((product) => product.category === category);
 
   return (
-    <section id="shop" className="bg-[var(--cream)] py-20">
+    <section id="shop" className="bg-[var(--cream)] pt-24 sm:pt-32 pb-14 sm:pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 sm:mb-10 gap-4 flex-wrap">
           <div>
@@ -329,10 +262,11 @@ function Products() {
             </h2>
           </div>
           <div className="flex gap-2 text-xs sm:text-sm overflow-x-auto pb-1 -mx-1 px-1 w-full sm:w-auto">
-            {["All", "Nuts", "Dry Fruits", "Mixes"].map((t, i) => (
+            {categories.map((t) => (
               <button
                 key={t}
-                className={`px-3 sm:px-4 h-8 sm:h-10 rounded-full border font-bold transition whitespace-nowrap ${i === 0 ? "bg-[var(--crimson)] text-[var(--cream)] border-[var(--crimson)]" : "bg-white border-[var(--ink)]/10 hover:bg-[var(--sand)]"}`}
+                onClick={() => setCategory(t)}
+                className={`px-3 sm:px-4 h-8 sm:h-10 rounded-full border font-bold transition whitespace-nowrap ${category === t ? "bg-[var(--crimson)] text-[var(--cream)] border-[var(--crimson)]" : "bg-white border-[var(--ink)]/10 hover:bg-[var(--sand)]"}`}
               >
                 {t}
               </button>
@@ -343,8 +277,8 @@ function Products() {
         {isLoading ? (
           <div className="py-20 text-center font-bold text-[var(--maroon)]">Loading harvest...</div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products?.map((p) => (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            {visibleProducts?.map((p) => (
               <ProductCard key={p.id} p={p} />
             ))}
           </div>

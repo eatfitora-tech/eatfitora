@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "@/hooks/useProducts";
+import { Product, productCartKey } from "@/hooks/useProducts";
 
 export interface CartItem {
   product: Product;
@@ -21,17 +21,6 @@ export interface Address {
   notes?: string;
 }
 
-export interface Order {
-  id: string;
-  date: string;
-  items: CartItem[];
-  total: number;
-  subtotal: number;
-  delivery: number;
-  status: "Pending" | "Confirmed" | "Delivered" | "Cancelled";
-  address: Address;
-}
-
 export interface User {
   name: string;
   role: "user" | "admin";
@@ -41,7 +30,6 @@ interface AppState {
   user: User | null;
   cart: CartItem[];
   wishlist: string[]; // Product IDs
-  orders: Order[];
 
   // Auth Actions
   login: (name: string, role: "user" | "admin") => void;
@@ -49,15 +37,12 @@ interface AppState {
 
   // Cart Actions
   addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (cartKey: string) => void;
+  updateQuantity: (cartKey: string, quantity: number) => void;
   clearCart: () => void;
 
   // Wishlist Actions
   toggleWishlist: (productId: string) => void;
-
-  // Order Actions
-  addOrder: (order: Order) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -66,35 +51,53 @@ export const useStore = create<AppState>()(
       user: null,
       cart: [],
       wishlist: [],
-      orders: [],
 
       login: (name, role) => set({ user: { name, role } }),
       logout: () => set({ user: null }),
 
       addToCart: (product, quantity = 1) =>
         set((state) => {
-          const existing = state.cart.find((item) => item.product.id === product.id);
+          const key = productCartKey(product);
+          const existing = state.cart.find((item) => productCartKey(item.product) === key);
           if (existing) {
             return {
               cart: state.cart.map((item) =>
-                item.product.id === product.id
-                  ? { ...item, quantity: item.quantity + quantity }
+                productCartKey(item.product) === key
+                  ? {
+                      ...item,
+                      quantity: Math.min(
+                        item.quantity + quantity,
+                        item.product.stockQuantity ?? Number.MAX_SAFE_INTEGER,
+                      ),
+                    }
                   : item,
               ),
             };
           }
-          return { cart: [...state.cart, { product, quantity }] };
+          const availableStock = product.stockQuantity ?? Number.MAX_SAFE_INTEGER;
+          if (availableStock <= 0) return { cart: state.cart };
+          return {
+            cart: [...state.cart, { product, quantity: Math.min(quantity, availableStock) }],
+          };
         }),
 
-      removeFromCart: (productId) =>
+      removeFromCart: (cartKey) =>
         set((state) => ({
-          cart: state.cart.filter((item) => item.product.id !== productId),
+          cart: state.cart.filter((item) => productCartKey(item.product) !== cartKey),
         })),
 
-      updateQuantity: (productId, quantity) =>
+      updateQuantity: (cartKey, quantity) =>
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.product.id === productId ? { ...item, quantity: Math.max(1, quantity) } : item,
+            productCartKey(item.product) === cartKey
+              ? {
+                  ...item,
+                  quantity: Math.min(
+                    Math.max(1, quantity),
+                    item.product.stockQuantity ?? Number.MAX_SAFE_INTEGER,
+                  ),
+                }
+              : item,
           ),
         })),
 
@@ -105,11 +108,6 @@ export const useStore = create<AppState>()(
           wishlist: state.wishlist.includes(productId)
             ? state.wishlist.filter((id) => id !== productId)
             : [...state.wishlist, productId],
-        })),
-
-      addOrder: (order) =>
-        set((state) => ({
-          orders: [order, ...state.orders],
         })),
     }),
     {

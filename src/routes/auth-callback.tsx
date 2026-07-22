@@ -25,7 +25,7 @@ function AuthCallback() {
           session.user.user_metadata?.name ||
           session.user.email?.split("@")[0] ||
           "User";
-        login(name, "user");
+        login(name, session.user.app_metadata?.role === "admin" ? "admin" : "user");
 
         // Redirect based on cart state
         if (cart.length > 0) {

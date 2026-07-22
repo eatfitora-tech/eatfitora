@@ -1,16 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useProducts, useCategories } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ProductCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PackageSearch } from "lucide-react";
 
 export const Route = createFileRoute("/shop")({
+  validateSearch: (search: Record<string, unknown>): { category?: string } => ({
+    category: typeof search.category === "string" ? search.category : undefined,
+  }),
   component: ShopPage,
 });
 
 function ShopPage() {
   const { data: products, isLoading: isProductsLoading } = useProducts();
   const { data: dbCategories, isLoading: isCategoriesLoading } = useCategories();
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const { category: requestedCategory } = Route.useSearch();
+  const [selectedCategory, setSelectedCategory] = useState<string>(requestedCategory || "All");
+
+  useEffect(() => setSelectedCategory(requestedCategory || "All"), [requestedCategory]);
 
   const categories = ["All", ...(dbCategories || [])];
   const isLoading = isProductsLoading || isCategoriesLoading;
@@ -54,8 +61,22 @@ function ShopPage() {
           <div className="text-center font-bold text-[var(--maroon)] text-xl py-20">
             Loading harvest...
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="rounded-3xl border border-[var(--ink)]/10 bg-white px-6 py-16 text-center">
+            <PackageSearch className="w-12 h-12 text-[var(--ink)]/20 mx-auto mb-4" />
+            <h2 className="font-display text-3xl text-[var(--maroon)]">No products here yet</h2>
+            <p className="text-sm text-[var(--ink)]/60 mt-2 mb-5">
+              Try another category or browse the complete harvest.
+            </p>
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className="h-10 px-5 rounded-full bg-[var(--crimson)] text-white text-sm font-bold"
+            >
+              View all products
+            </button>
+          </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
             {filteredProducts.map((p) => (
               <ProductCard key={p.id} p={p} />
             ))}

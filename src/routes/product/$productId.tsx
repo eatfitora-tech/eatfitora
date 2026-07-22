@@ -12,7 +12,7 @@ import {
   Truck,
   Check,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/product/$productId")({
   component: ProductDetailsPage,
@@ -25,6 +25,12 @@ function ProductDetailsPage() {
   const { addToCart, wishlist, toggleWishlist } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+  const [selectedWeight, setSelectedWeight] = useState("");
+  const product = products?.find((p) => p.id === productId);
+
+  useEffect(() => {
+    setSelectedWeight(product?.weightOptions?.[0]?.weight || "");
+  }, [product?.id, product?.weightOptions]);
 
   if (isLoading) {
     return (
@@ -33,8 +39,6 @@ function ProductDetailsPage() {
       </div>
     );
   }
-
-  const product = products?.find((p) => p.id === productId);
 
   if (!product) {
     return (
@@ -50,8 +54,24 @@ function ProductDetailsPage() {
     );
   }
 
+  const selectedOption = product.weightOptions?.find((option) => option.weight === selectedWeight);
+  const activePrice = selectedOption?.price ?? product.price;
+  const activeOriginalPrice = selectedOption?.originalPrice ?? product.originalPrice;
+  const isOutOfStock = product.stockQuantity <= 0;
+
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    if (isOutOfStock) return;
+    addToCart(
+      selectedOption
+        ? {
+            ...product,
+            price: selectedOption.price,
+            originalPrice: selectedOption.originalPrice,
+            selectedWeight: selectedOption.weight,
+          }
+        : product,
+      quantity,
+    );
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 2000);
   };
@@ -105,11 +125,11 @@ function ProductDetailsPage() {
             </h1>
             <div className="flex items-center gap-3 mb-6">
               <p className="text-xl sm:text-2xl text-[var(--crimson)] font-bold">
-                ₹{product.price.toFixed(2)}
+                ₹{activePrice.toFixed(2)}
               </p>
-              {product.originalPrice && (
+              {activeOriginalPrice && (
                 <p className="text-lg text-[var(--ink)]/40 line-through font-bold">
-                  ₹{product.originalPrice.toFixed(2)}
+                  ₹{activeOriginalPrice.toFixed(2)}
                 </p>
               )}
             </div>
@@ -132,6 +152,31 @@ function ProductDetailsPage() {
               {product.description}
             </p>
 
+            {product.weightOptions && product.weightOptions.length > 0 && (
+              <div className="mb-7">
+                <div className="text-xs font-bold text-[var(--ink)]/55 uppercase tracking-wider mb-3">
+                  Select pack size
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {product.weightOptions.map((option) => (
+                    <button
+                      key={option.weight}
+                      type="button"
+                      onClick={() => setSelectedWeight(option.weight)}
+                      className={`min-w-24 rounded-xl border-2 px-4 py-2.5 text-left transition ${selectedWeight === option.weight ? "border-[var(--crimson)] bg-white shadow-sm" : "border-[var(--ink)]/10 bg-white/50 hover:border-[var(--amber)]"}`}
+                    >
+                      <span className="block text-sm font-bold text-[var(--maroon)]">
+                        {option.weight}
+                      </span>
+                      <span className="block text-xs font-semibold text-[var(--ink)]/60 mt-0.5">
+                        ₹{option.price.toFixed(0)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 sm:mb-10">
               <div className="flex items-center bg-white rounded-full border border-[var(--ink)]/10 shadow-sm">
                 <button
@@ -142,8 +187,9 @@ function ProductDetailsPage() {
                 </button>
                 <span className="w-12 text-center font-bold text-lg">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-12 h-12 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
+                  onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                  disabled={quantity >= product.stockQuantity}
+                  className="w-12 h-12 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition disabled:opacity-30"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -151,24 +197,37 @@ function ProductDetailsPage() {
 
               <button
                 onClick={handleAddToCart}
+                disabled={isOutOfStock}
                 className={`flex-1 min-w-[180px] flex items-center justify-center gap-2 h-12 rounded-full font-bold text-base sm:text-lg transition shadow-xl ${
-                  justAdded
-                    ? "bg-green-600 text-white scale-[1.03]"
-                    : "bg-[var(--crimson)] text-[var(--cream)] hover:scale-[1.03]"
+                  isOutOfStock
+                    ? "bg-[var(--ink)]/20 text-[var(--ink)]/50 cursor-not-allowed shadow-none"
+                    : justAdded
+                      ? "bg-green-600 text-white scale-[1.03]"
+                      : "bg-[var(--crimson)] text-[var(--cream)] hover:scale-[1.03]"
                 }`}
               >
-                {justAdded ? (
+                {isOutOfStock ? (
+                  <>Sold out</>
+                ) : justAdded ? (
                   <>
                     <Check className="w-5 h-5" /> Added to Cart!
                   </>
                 ) : (
                   <>
                     <ShoppingBag className="w-5 h-5" /> Add to Cart — ₹
-                    {(product.price * quantity).toFixed(2)}
+                    {(activePrice * quantity).toFixed(2)}
                   </>
                 )}
               </button>
             </div>
+
+            {!isOutOfStock && (
+              <p className="-mt-6 mb-8 text-xs font-semibold text-[var(--ink)]/55">
+                {product.stockQuantity <= product.lowStockThreshold
+                  ? `Only ${product.stockQuantity} left in stock`
+                  : `${product.stockQuantity} units available`}
+              </p>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 border-t border-b border-[var(--ink)]/10 py-4 sm:py-6 mb-6 sm:mb-8">
               <div className="flex items-center gap-3">

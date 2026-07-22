@@ -10,11 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
@@ -22,11 +27,17 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductProductIdRouteImport } from './routes/product/$productId'
 import { Route as CheckoutSummaryRouteImport } from './routes/checkout/summary'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as CheckoutAddressRouteImport } from './routes/checkout/address'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -39,9 +50,19 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShippingRoute = ShippingRouteImport.update({
+  id: '/shipping',
+  path: '/shipping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -49,9 +70,19 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -89,6 +120,11 @@ const CheckoutSummaryRoute = CheckoutSummaryRouteImport.update({
   path: '/checkout/summary',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutAddressRoute = CheckoutAddressRouteImport.update({
   id: '/checkout/address',
   path: '/checkout/address',
@@ -101,13 +137,19 @@ export interface FileRoutesByFullPath {
   '/admin-login': typeof AdminLoginRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
+  '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
   '/checkout/address': typeof CheckoutAddressRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/checkout/summary': typeof CheckoutSummaryRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
@@ -117,13 +159,19 @@ export interface FileRoutesByTo {
   '/admin-login': typeof AdminLoginRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
+  '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
   '/checkout/address': typeof CheckoutAddressRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/checkout/summary': typeof CheckoutSummaryRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
@@ -134,13 +182,19 @@ export interface FileRoutesById {
   '/admin-login': typeof AdminLoginRoute
   '/auth-callback': typeof AuthCallbackRoute
   '/cart': typeof CartRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
+  '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/wishlist': typeof WishlistRoute
   '/checkout/address': typeof CheckoutAddressRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/checkout/summary': typeof CheckoutSummaryRoute
   '/product/$productId': typeof ProductProductIdRoute
 }
@@ -152,13 +206,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/auth-callback'
     | '/cart'
+    | '/contact'
     | '/login'
+    | '/privacy'
     | '/profile'
+    | '/returns'
     | '/search'
+    | '/shipping'
     | '/shop'
     | '/signup'
+    | '/terms'
     | '/wishlist'
     | '/checkout/address'
+    | '/checkout/success'
     | '/checkout/summary'
     | '/product/$productId'
   fileRoutesByTo: FileRoutesByTo
@@ -168,13 +228,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/auth-callback'
     | '/cart'
+    | '/contact'
     | '/login'
+    | '/privacy'
     | '/profile'
+    | '/returns'
     | '/search'
+    | '/shipping'
     | '/shop'
     | '/signup'
+    | '/terms'
     | '/wishlist'
     | '/checkout/address'
+    | '/checkout/success'
     | '/checkout/summary'
     | '/product/$productId'
   id:
@@ -184,13 +250,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/auth-callback'
     | '/cart'
+    | '/contact'
     | '/login'
+    | '/privacy'
     | '/profile'
+    | '/returns'
     | '/search'
+    | '/shipping'
     | '/shop'
     | '/signup'
+    | '/terms'
     | '/wishlist'
     | '/checkout/address'
+    | '/checkout/success'
     | '/checkout/summary'
     | '/product/$productId'
   fileRoutesById: FileRoutesById
@@ -201,13 +273,19 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   CartRoute: typeof CartRoute
+  ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
+  ReturnsRoute: typeof ReturnsRoute
   SearchRoute: typeof SearchRoute
+  ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
   WishlistRoute: typeof WishlistRoute
   CheckoutAddressRoute: typeof CheckoutAddressRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CheckoutSummaryRoute: typeof CheckoutSummaryRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
 }
@@ -219,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/wishlist'
       fullPath: '/wishlist'
       preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -235,11 +320,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shipping': {
+      id: '/shipping'
+      path: '/shipping'
+      fullPath: '/shipping'
+      preLoaderRoute: typeof ShippingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -249,11 +348,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -305,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/address': {
       id: '/checkout/address'
       path: '/checkout/address'
@@ -321,13 +441,19 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   CartRoute: CartRoute,
+  ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
+  ReturnsRoute: ReturnsRoute,
   SearchRoute: SearchRoute,
+  ShippingRoute: ShippingRoute,
   ShopRoute: ShopRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
   WishlistRoute: WishlistRoute,
   CheckoutAddressRoute: CheckoutAddressRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   CheckoutSummaryRoute: CheckoutSummaryRoute,
   ProductProductIdRoute: ProductProductIdRoute,
 }

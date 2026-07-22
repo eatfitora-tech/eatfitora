@@ -1,34 +1,34 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ProductCard";
 import { Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { searchProducts } from "@/lib/product-search";
 
 // Using a custom hook or just any for search params since we don't have strict type definitions setup here for simplicity
 export const Route = createFileRoute("/search")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    q: typeof search.q === "string" ? search.q : "",
+  }),
   component: SearchPage,
 });
 
 function SearchPage() {
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(window.location.search);
-  const initialQuery = searchParams.get("q") || "";
+  const { q: initialQuery } = Route.useSearch();
 
   const [query, setQuery] = useState(initialQuery);
   const { data: products, isLoading } = useProducts();
+
+  useEffect(() => setQuery(initialQuery), [initialQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     navigate({ to: "/search", search: { q: query } });
   };
 
-  const results =
-    products?.filter(
-      (p) =>
-        p.name.toLowerCase().includes(initialQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(initialQuery.toLowerCase()) ||
-        p.category.toLowerCase().includes(initialQuery.toLowerCase()),
-    ) || [];
+  const activeQuery = query.trim();
+  const results = searchProducts(products || [], activeQuery || initialQuery);
 
   return (
     <div className="bg-[var(--cream)] min-h-screen pt-24 sm:pt-32 pb-16 sm:pb-20">
@@ -50,10 +50,11 @@ function SearchPage() {
           </button>
         </form>
 
-        {initialQuery && (
+        {(activeQuery || initialQuery) && (
           <div className="mb-10">
             <h2 className="font-display text-3xl text-[var(--maroon)]">
-              {results.length} results for "{initialQuery}"
+              {results.length} matching product{results.length === 1 ? "" : "s"} for “
+              {activeQuery || initialQuery}”
             </h2>
           </div>
         )}
@@ -62,16 +63,16 @@ function SearchPage() {
           <div className="text-center font-bold text-[var(--maroon)] text-xl py-20">
             Searching...
           </div>
-        ) : initialQuery && results.length === 0 ? (
+        ) : (activeQuery || initialQuery) && results.length === 0 ? (
           <div className="text-center py-20">
             <Search className="w-16 h-16 text-[var(--ink)]/20 mx-auto mb-6" />
             <h3 className="font-display text-3xl text-[var(--maroon)] mb-4">No harvest found</h3>
             <p className="text-[var(--ink)]/60">
-              Try searching for something else like "Cashews" or "Sweet".
+              Try a product name, category, or even the first few matching letters.
             </p>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
             {results.map((p) => (
               <ProductCard key={p.id} p={p} />
             ))}

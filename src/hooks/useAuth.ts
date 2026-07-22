@@ -20,7 +20,8 @@ export function useAuth() {
           supaUser.user_metadata?.name ||
           supaUser.email?.split("@")[0] ||
           "User";
-        storeLogin(name, "user");
+        const role = supaUser.app_metadata?.role === "admin" ? "admin" : "user";
+        storeLogin(name, role);
 
         // Save username to email mapping locally
         if (supaUser.email) {
@@ -65,16 +66,6 @@ export function useAuth() {
   const signIn = async (emailOrUsername: string, password: string) => {
     let email = emailOrUsername.trim();
     const lowerEmail = email.toLowerCase();
-
-    // Local admin role bypass
-    if (lowerEmail === "fitora-admin" || lowerEmail === "admin@fitora.com") {
-      if (password === "Fitora@2026!") {
-        storeLogin("admin", "admin");
-        return { user: { email: "admin@fitora.com" } };
-      } else {
-        throw new Error("Invalid credentials.");
-      }
-    }
 
     if (!email.includes("@")) {
       const usernames = JSON.parse(localStorage.getItem("fitora_usernames") || "{}");

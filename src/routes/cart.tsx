@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/store/useStore";
 import { Minus, Plus, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
+import { productCartKey, useProducts } from "@/hooks/useProducts";
+import { estimatedDelivery, FREE_DELIVERY_THRESHOLD } from "@/lib/commerce";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
@@ -8,10 +10,15 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { cart, updateQuantity, removeFromCart, user } = useStore();
+  const { data: liveProducts } = useProducts();
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const delivery = subtotal > 40 || cart.length === 0 ? 0 : 5.0;
+  const delivery = estimatedDelivery(subtotal);
   const total = subtotal + delivery;
+  const unavailableItems = cart.filter((item) => {
+    const liveProduct = liveProducts?.find((product) => product.id === item.product.id);
+    return liveProduct ? !liveProduct.isActive || liveProduct.stockQuantity < item.quantity : false;
+  });
 
   return (
     <div className="bg-[var(--cream)] min-h-screen pt-24 sm:pt-32 pb-16 sm:pb-20">
@@ -40,62 +47,85 @@ function CartPage() {
         ) : (
           <div className="grid lg:grid-cols-3 gap-6 sm:gap-10">
             <div className="lg:col-span-2 space-y-4">
-              {cart.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 flex gap-3 sm:gap-4 md:gap-6 shadow-sm border border-[var(--ink)]/10"
-                >
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-[var(--sand)] rounded-xl shrink-0 overflow-hidden relative">
-                    <img
-                      src={item.product.image}
-                      alt={item.product.name}
-                      className="absolute inset-0 w-full h-full object-contain p-2 md:p-4 drop-shadow-md"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between py-1">
-                    <div className="flex justify-between items-start gap-4">
-                      <div>
-                        <h3 className="font-display text-xl md:text-2xl text-[var(--maroon)]">
-                          {item.product.name}
-                        </h3>
-                        <p className="text-xs md:text-sm text-[var(--ink)]/60 font-medium">
-                          {item.product.tagline}
-                        </p>
-                      </div>
-                      <div className="font-display text-xl md:text-2xl text-[var(--crimson)]">
-                        ₹{(item.product.price * item.quantity).toFixed(2)}
-                      </div>
+              {cart.map((item) => {
+                const cartKey = productCartKey(item.product);
+                const liveProduct = liveProducts?.find((product) => product.id === item.product.id);
+                const availableStock =
+                  liveProduct?.stockQuantity ??
+                  item.product.stockQuantity ??
+                  Number.MAX_SAFE_INTEGER;
+                return (
+                  <div
+                    key={cartKey}
+                    className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 flex gap-3 sm:gap-4 md:gap-6 shadow-sm border border-[var(--ink)]/10"
+                  >
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-[var(--sand)] rounded-xl shrink-0 overflow-hidden relative">
+                      <img
+                        src={item.product.image}
+                        alt={item.product.name}
+                        className="absolute inset-0 w-full h-full object-contain p-2 md:p-4 drop-shadow-md"
+                      />
                     </div>
+                    <div className="flex-1 flex flex-col justify-between py-1">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <h3 className="font-display text-xl md:text-2xl text-[var(--maroon)]">
+                            {item.product.name}
+                          </h3>
+                          <p className="text-xs md:text-sm text-[var(--ink)]/60 font-medium">
+                            {item.product.tagline}
+                          </p>
+                          {item.product.selectedWeight && (
+                            <p className="mt-1 inline-flex rounded-full bg-[var(--sand)] px-2 py-0.5 text-[10px] font-bold text-[var(--maroon)]">
+                              Pack: {item.product.selectedWeight}
+                            </p>
+                          )}
+                        </div>
+                        <div className="font-display text-xl md:text-2xl text-[var(--crimson)]">
+                          ₹{(item.product.price * item.quantity).toFixed(2)}
+                        </div>
+                      </div>
 
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center bg-[var(--cream)] rounded-full border border-[var(--ink)]/10">
+                      <div className="flex items-center justify-between mt-4">
+                        <div className="flex items-center bg-[var(--cream)] rounded-full border border-[var(--ink)]/10">
+                          <button
+                            onClick={() => updateQuantity(cartKey, item.quantity - 1)}
+                            className="w-8 h-8 md:w-10 md:h-10 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
+                          >
+                            <Minus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          </button>
+                          <span className="w-8 md:w-10 text-center font-bold text-sm md:text-base">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => {
+                              if (item.quantity < availableStock) {
+                                updateQuantity(cartKey, item.quantity + 1);
+                              }
+                            }}
+                            disabled={item.quantity >= availableStock}
+                            className="w-8 h-8 md:w-10 md:h-10 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition disabled:opacity-30"
+                          >
+                            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          </button>
+                        </div>
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                          className="w-8 h-8 md:w-10 md:h-10 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
+                          onClick={() => removeFromCart(cartKey)}
+                          className="text-sm text-red-500 font-semibold flex items-center gap-1.5 hover:bg-red-50 px-3 py-1.5 rounded-full transition"
                         >
-                          <Minus className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                        </button>
-                        <span className="w-8 md:w-10 text-center font-bold text-sm md:text-base">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                          className="w-8 h-8 md:w-10 md:h-10 grid place-items-center text-[var(--ink)]/60 hover:text-[var(--maroon)] transition"
-                        >
-                          <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          <Trash2 className="w-4 h-4" />{" "}
+                          <span className="hidden md:inline">Remove</span>
                         </button>
                       </div>
-                      <button
-                        onClick={() => removeFromCart(item.product.id)}
-                        className="text-sm text-red-500 font-semibold flex items-center gap-1.5 hover:bg-red-50 px-3 py-1.5 rounded-full transition"
-                      >
-                        <Trash2 className="w-4 h-4" />{" "}
-                        <span className="hidden md:inline">Remove</span>
-                      </button>
                     </div>
+                    {availableStock < item.quantity && (
+                      <div className="self-center rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600">
+                        Only {availableStock} available
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div>
@@ -121,7 +151,7 @@ function CartPage() {
                   </div>
                   {delivery > 0 && (
                     <div className="text-xs text-[var(--crimson)] bg-[var(--crimson)]/10 px-3 py-2 rounded-lg mt-2">
-                      Add ₹{(40 - subtotal).toFixed(2)} more for free delivery!
+                      Add ₹{(FREE_DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for free delivery!
                     </div>
                   )}
                 </div>
@@ -133,12 +163,18 @@ function CartPage() {
                   </span>
                 </div>
 
-                <Link
-                  to={user ? "/checkout/address" : "/login"}
-                  className="flex items-center justify-center gap-2 w-full h-12 sm:h-14 rounded-full bg-[var(--crimson)] text-[var(--cream)] font-bold text-base sm:text-lg hover:scale-[1.03] transition shadow-xl"
-                >
-                  Proceed to Checkout <ArrowRight className="w-5 h-5" />
-                </Link>
+                {unavailableItems.length > 0 ? (
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-600">
+                    Update or remove unavailable items before checkout.
+                  </div>
+                ) : (
+                  <Link
+                    to={user ? "/checkout/address" : "/login"}
+                    className="flex items-center justify-center gap-2 w-full h-12 sm:h-14 rounded-full bg-[var(--crimson)] text-[var(--cream)] font-bold text-base sm:text-lg hover:scale-[1.03] transition shadow-xl"
+                  >
+                    Proceed to Checkout <ArrowRight className="w-5 h-5" />
+                  </Link>
+                )}
 
                 <p className="text-center text-xs text-[var(--ink)]/50 mt-4 font-medium">
                   Checkout is completed via WhatsApp.
