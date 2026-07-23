@@ -9,32 +9,36 @@ import imgDates from "@/assets/product-dates.webp";
 import imgWalnuts from "@/assets/product-walnuts.webp";
 import imgApricots from "@/assets/product-apricots.webp";
 import { useState } from "react";
+import { createPageHead, fitoraOrganizationJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Fitora — Premium Nuts & Dry Fruits, Cracked Fresh" },
-      {
-        name: "description",
-        content:
-          "Hand-picked nuts and dry fruits — cashews, almonds, pistachios, dates and more. Roasted in small batches and delivered to your door.",
-      },
-      { property: "og:title", content: "Fitora — Premium Nuts & Dry Fruits" },
-      {
-        property: "og:description",
-        content: "Hand-picked, small-batch roasted nuts and dry fruits delivered fresh.",
-      },
-      { property: "og:image", content: heroBowl },
-    ],
-    links: [
+  head: () => {
+    const seo = createPageHead(
+      "Fitora — Buy Premium Nuts & Dry Fruits Online in India",
+      "Shop premium cashews, almonds, pistachios, dates, walnuts, dry fruits, and healthy snack mixes from Fitora. Freshness-packed and delivered in India.",
+      "/",
+    );
+
+    return {
+      ...seo,
+      meta: [...seo.meta, { property: "og:image", content: heroBowl }],
+      links: [
+        ...seo.links,
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
-    ],
-  }),
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(fitoraOrganizationJsonLd),
+        },
+      ],
+    };
+  },
   component: Index,
 });
 

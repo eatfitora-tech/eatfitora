@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/PolicyPage";
+import { createPageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/terms")({ component: TermsPage });
+export const Route = createFileRoute("/terms")({
+  head: () =>
+    createPageHead(
+      "Terms and Conditions | Fitora",
+      "Read the terms that apply when browsing Fitora, creating an account, or placing an order.",
+      "/terms",
+    ),
+  component: TermsPage,
+});
 
 function TermsPage() {
   return (

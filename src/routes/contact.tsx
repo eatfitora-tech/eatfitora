@@ -1,8 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, MessageCircle } from "lucide-react";
 import { PolicyPage } from "@/components/PolicyPage";
+import { createPageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/contact")({ component: ContactPage });
+export const Route = createFileRoute("/contact")({
+  head: () =>
+    createPageHead(
+      "Contact Fitora | Orders and Customer Support",
+      "Contact Fitora for product questions, order assistance, delivery support, and returns through WhatsApp or Instagram.",
+      "/contact",
+    ),
+  component: ContactPage,
+});
 
 function ContactPage() {
   return (

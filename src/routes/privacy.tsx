@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/PolicyPage";
+import { createPageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/privacy")({ component: PrivacyPage });
+export const Route = createFileRoute("/privacy")({
+  head: () =>
+    createPageHead(
+      "Privacy Policy | Fitora",
+      "Learn how Fitora handles account, order, delivery, and website information.",
+      "/privacy",
+    ),
+  component: PrivacyPage,
+});
 
 function PrivacyPage() {
   return (

@@ -10,3 +10,4 @@ Disallow: /login
 Disallow: /profile
 Disallow: /signup
 
+Sitemap: https://eatfitora.in/sitemap.xml

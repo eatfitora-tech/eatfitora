@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/PolicyPage";
+import { createPageHead } from "@/lib/seo";
 
-export const Route = createFileRoute("/returns")({ component: ReturnsPage });
+export const Route = createFileRoute("/returns")({
+  head: () =>
+    createPageHead(
+      "Returns and Refunds Policy | Fitora",
+      "See Fitora's process for damaged, unsealed, expired, or incorrect food-product orders.",
+      "/returns",
+    ),
+  component: ReturnsPage,
+});
 
 function ReturnsPage() {
   return (

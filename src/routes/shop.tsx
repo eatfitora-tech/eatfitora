@@ -3,8 +3,15 @@ import { useProducts, useCategories } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ProductCard";
 import { useEffect, useState } from "react";
 import { PackageSearch } from "lucide-react";
+import { createPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/shop")({
+  head: () =>
+    createPageHead(
+      "Shop Premium Nuts & Dry Fruits Online | Fitora",
+      "Browse Fitora's premium cashews, almonds, pistachios, dates, walnuts, dried fruits, and healthy snack mixes online in India.",
+      "/shop",
+    ),
   validateSearch: (search: Record<string, unknown>): { category?: string } => ({
     category: typeof search.category === "string" ? search.category : undefined,
   }),

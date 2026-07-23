@@ -11,6 +11,23 @@ export default defineConfig({
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       server: { entry: "server" },
+      pages: [
+        { path: "/" },
+        { path: "/shop" },
+        { path: "/contact" },
+        { path: "/privacy" },
+        { path: "/terms" },
+        { path: "/shipping" },
+        { path: "/returns" },
+      ],
+      prerender: {
+        enabled: true,
+        autoStaticPathsDiscovery: false,
+        crawlLinks: false,
+        failOnError: true,
+      },
+      // A hand-maintained public sitemap supplies useful crawl priorities.
+      sitemap: { enabled: false },
     }),
     nitro({
       preset: "netlify",
